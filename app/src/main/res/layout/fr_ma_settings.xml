@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/et_ip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:importantForAutofill="no"
+        android:digits="0123456789."
+        android:inputType="number"
+        android:maxLength="15"
+        android:hint="@string/ip_server" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/et_id_driver"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:hint="@string/id_driver"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/button_connect_db"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:text="@string/connect"/>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/button_connect_elm327"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/select_elm"/>
+
+</LinearLayout>

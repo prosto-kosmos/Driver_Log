@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Driver Log</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="settings">Настройки</string>
+    <string name="exit">Выход</string>
+    <string name="params">Параметры диагностики</string>
+    <string name="id_driver">Идентификатор</string>
+    <string name="ip_server">IP-адрес сервера</string>
+    <string name="select_elm">Выбрать устройство ELM 327</string>
+    <string name="connect">Подключиться</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="speed">Скорость</string>
+    <string name="rpm">Обороты двигателя</string>
+    <string name="main_button">Получить данные с устройства ELM 327 и отправить их на сервер</string>
+    <string name="wait">Подождите…</string>
+</resources>
