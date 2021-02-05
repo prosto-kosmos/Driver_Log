@@ -13,12 +13,33 @@
         android:gravity="center"
         android:text="@string/welcome" />
 
+
     <Button
-        android:id="@+id/main_button"
-        android:text="@string/main_button"
+        android:id="@+id/start_button"
+        android:text="@string/start_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"/>
 
+    <Button
+        android:id="@+id/stop_button"
+        android:text="@string/stop_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"/>
+
+    <Button
+        android:id="@+id/send_data_button"
+        android:text="@string/send_data_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"/>
+
+    <Button
+        android:id="@+id/delete_data_button"
+        android:text="@string/delete_data_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"/>
 
 </LinearLayout>

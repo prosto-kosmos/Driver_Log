@@ -4,14 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     SharedPreferencesHelper mSharedPreferencesHelper;
@@ -22,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mSharedPreferencesHelper = new SharedPreferencesHelper(MainActivity.this);
         mSharedPreferencesHelper.addBDB(1);
-    // конструкция, которая призапуске программы помещает в контейнер в главном
+        // конструкция, которая призапуске программы помещает в контейнер в главном
         // активити (MainActivity) первый фрагмент (MainFragment)
         if (savedInstanceState == null){
             FragmentManager fragmentManager = getSupportFragmentManager();

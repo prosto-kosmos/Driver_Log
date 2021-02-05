@@ -4,82 +4,87 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.net.URL;
 
-public class AsyncHttpPost extends AsyncTask<String, String, String> {
+// AsyncTask<тип входного аргумента, тип прогресса. тип возвращаемого значения>
+public class AsyncHttpPost extends AsyncTask<String, Void, String> {
+    public static final String TAG = AsyncHttpPost.class.getSimpleName();
+    private WeakReference<MainActivity> mActivityWeakReference;
+
+    private Listener mListener;
     interface Listener {
         void onResult(String result);
     }
-    private Listener mListener;
-    private HashMap<String, String> mData = null;// post data
 
-    /**
-     * constructor
-     */
-    public AsyncHttpPost(HashMap<String, String> data) {
-        mData = data;
-    }
     public void setListener(Listener listener) {
         mListener = listener;
     }
 
-    /**
-     * background
-     */
-    @Override
-    protected String doInBackground(String... params) {
-        byte[] result = null;
-        String str = "";
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(params[0]);// in this case, params[0] is URL
-
-        try {
-            // set up post data
-            ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
-            Iterator<String> it = mData.keySet().iterator();
-            while (it.hasNext()) {
-                String key = it.next();
-                nameValuePair.add(new BasicNameValuePair(key, mData.get(key)));
-            }
-
-            post.setEntity(new UrlEncodedFormEntity(nameValuePair, "UTF-8"));
-            HttpResponse response = client.execute(post);
-            StatusLine statusLine = response.getStatusLine();
-            if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
-                result = EntityUtils.toByteArray(response.getEntity());
-                str = new String(result, "UTF-8");
-            }
-        }
-        catch (UnsupportedEncodingException e) {
-            Log.e("tag1", e.toString());
-        }
-        catch (Exception e) {
-            Log.e("tag2", e.toString());
-        }
-        return str;
+    public AsyncHttpPost(MainActivity activity) {
+        mActivityWeakReference = new WeakReference<>(activity);
     }
 
-    /**
-     * on getting result
-     */
     @Override
-    protected void onPostExecute(String result) {
-        // something...
+    protected void onPreExecute() {// выполнится до doInBackground
+        MainActivity activity = mActivityWeakReference.get();
+        if (activity != null){
+            Log.i(TAG, "onPreExecute: ");
+        }
+    }
+
+    @Override
+    protected String doInBackground(String... strings) {// выполнится в фоновом потоке
+        Log.i(TAG, "doInBackground: request - " + strings[0]);
+        try {
+            return doGet(strings[0]);
+        } catch (Exception e) {
+            Log.e(TAG, "Ошибка подключения");
+            return "ServerError";
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String result) { //выполнится после doInBackground
+        MainActivity activity = mActivityWeakReference.get();
+        if (activity != null){
+            Log.i(TAG, "onPostExecute: " + result);
+        }
         if (mListener != null) {
             mListener.onResult(result);
         }
+    }
+
+    public static String doGet(String url) throws Exception {
+
+        URL obj = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0" );
+        connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            response.append(inputLine);
+        }
+        bufferedReader.close();
+
+        Log.i(TAG,"Response string: " + response.toString());
+        return response.toString();
     }
 }

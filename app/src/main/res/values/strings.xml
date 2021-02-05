@@ -5,12 +5,17 @@
     <string name="exit">Выход</string>
     <string name="params">Параметры диагностики</string>
     <string name="id_driver">Идентификатор</string>
-    <string name="ip_server">IP-адрес сервера</string>
+    <string name="ip_server">Адрес сервера</string>
     <string name="select_elm">Выбрать устройство ELM 327</string>
     <string name="connect">Подключиться</string>
     <string name="select_all">Выбрать все</string>
     <string name="speed">Скорость</string>
     <string name="rpm">Обороты двигателя</string>
-    <string name="main_button">Получить данные с устройства ELM 327 и отправить их на сервер</string>
     <string name="wait">Подождите…</string>
+    <string name="period">Период считывания данных(сек)</string>
+    <string name="save">Сохранить настройки</string>
+    <string name="start_button">Начать получение данных</string>
+    <string name="stop_button">Приостоновить получение данных</string>
+    <string name="send_data_button">Отправить данные на сервер</string>
+    <string name="delete_data_button">Удалить все неотправленные данные</string>
 </resources>
