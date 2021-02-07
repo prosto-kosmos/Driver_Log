@@ -94,7 +94,7 @@ public class SettingsFragment extends Fragment {
             button_connect_db.setText(R.string.wait);
             button_connect_db.setEnabled(false);
 
-            AsyncHttpPost asyncHttpPost = new AsyncHttpPost((MainActivity) getActivity());
+            AsyncHttpPost asyncHttpPost = new AsyncHttpPost();
 
             asyncHttpPost.setListener(new AsyncHttpPost.Listener() {
                 @Override

@@ -2,8 +2,6 @@ package com.example.driverlog;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Switch;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,11 +9,9 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Vector;
 
 public class SharedPreferencesHelper {
-    public static final String SHARED_PREF_NAME = "DRIVER_LOG_DATA_11";
+    public static final String SHARED_PREF_NAME = "DRIVER_LOG_DATA_12";
     public static final String ET_ID = "ID";
     public static final String ET_IP = "IP";
     public static final String FIO = "FIO";
@@ -76,7 +72,7 @@ public class SharedPreferencesHelper {
     }
 
     public Integer getPeriod(){
-        return mSharedPreferences.getInt(PERIOD_KEY, 10);
+        return mSharedPreferences.getInt(PERIOD_KEY, 5);
     }
 
     public void addPeriod(Integer period){
@@ -112,6 +108,12 @@ public class SharedPreferencesHelper {
     public void delDataSet(){
         HashSet<HashMap<String, String>> new_data_set = getDataSet();
         new_data_set.clear();
+        mSharedPreferences.edit().putString(DATA_KEY, mGson.toJson(new_data_set, DATA_TYPE)).apply();
+    }
+
+    public void delItemDataSet(HashMap<String, String> obj){
+        HashSet<HashMap<String, String>> new_data_set = getDataSet();
+        new_data_set.remove(obj);
         mSharedPreferences.edit().putString(DATA_KEY, mGson.toJson(new_data_set, DATA_TYPE)).apply();
     }
 }

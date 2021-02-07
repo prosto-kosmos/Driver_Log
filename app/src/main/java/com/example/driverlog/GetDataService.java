@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -52,7 +53,6 @@ public class GetDataService extends Service {
     UUID uuid;
     String deviceAddress;
     BluetoothSocket socket;
-    HashMap<Integer, Boolean> hashMap;
     HashMap<String, String> DataMap;
     HashSet<HashMap<String, String>> AllDataSet;
     Date currentDate;
@@ -77,8 +77,13 @@ public class GetDataService extends Service {
         AllDataSet = new HashSet<HashMap<String, String>>();
         currentDate = new Date();
 
-        mBuilder.setContentTitle(getString(R.string.app_name)).setSmallIcon(R.drawable.ic_stat_name);
-        startForeground(1, getNotification("Запуск"));
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentTitle("Получение данных с ELM 327").setSmallIcon(R.drawable.ic_stat_name);
+        mBuilder.setContentIntent(resultPendingIntent);
+        startForeground(1, getNotification("Подключение к ELM 327..."));
 
 
         mScheduledExecutorService.scheduleAtFixedRate(new Runnable() {
@@ -175,8 +180,7 @@ public class GetDataService extends Service {
                     DataMap.put("ThrottlePosition",FormattedResult.substring(0, FormattedResult.length() - 1));
                     mSharedPreferencesHelper.addDataSet(DataMap);
                     Log.i(TAG, "Получены данные за " + dateText);
-                    Log.i(TAG, mSharedPreferencesHelper.getDataSet().toString());
-                    mManager.notify(1, getNotification("Идет получение. Всего: " + mSharedPreferencesHelper.getDataSet().size()));
+                    mManager.notify(1, getNotification("Идет получение. Получено: " + mSharedPreferencesHelper.getDataSet().size()));
                 } catch (IOException | InterruptedException e) {
                     Log.e(TAG, "Не удалось получить данные" + e.toString());
                     return;
@@ -200,6 +204,7 @@ public class GetDataService extends Service {
             socket.close();
             socket = null;
             Toast.makeText(this, "Получение данных приостановлено", Toast.LENGTH_SHORT).show();
+            mManager.cancel(1);
         } catch (Exception e) {
             Log.e(TAG, "Не удалось закрыть сокет");
         }

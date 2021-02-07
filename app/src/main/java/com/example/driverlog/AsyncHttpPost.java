@@ -3,15 +3,7 @@ package com.example.driverlog;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
@@ -20,7 +12,6 @@ import java.net.URL;
 // AsyncTask<тип входного аргумента, тип прогресса. тип возвращаемого значения>
 public class AsyncHttpPost extends AsyncTask<String, Void, String> {
     public static final String TAG = AsyncHttpPost.class.getSimpleName();
-    private WeakReference<MainActivity> mActivityWeakReference;
 
     private Listener mListener;
     interface Listener {
@@ -31,16 +22,13 @@ public class AsyncHttpPost extends AsyncTask<String, Void, String> {
         mListener = listener;
     }
 
-    public AsyncHttpPost(MainActivity activity) {
-        mActivityWeakReference = new WeakReference<>(activity);
+    public AsyncHttpPost() {
+        //todo
     }
 
     @Override
     protected void onPreExecute() {// выполнится до doInBackground
-        MainActivity activity = mActivityWeakReference.get();
-        if (activity != null){
-            Log.i(TAG, "onPreExecute: ");
-        }
+        Log.i(TAG, "onPreExecute: ");
     }
 
     @Override
@@ -49,17 +37,14 @@ public class AsyncHttpPost extends AsyncTask<String, Void, String> {
         try {
             return doGet(strings[0]);
         } catch (Exception e) {
-            Log.e(TAG, "Ошибка подключения");
+            Log.e(TAG, "Ошибка подключения: " +e.toString());
             return "ServerError";
         }
     }
 
     @Override
     protected void onPostExecute(String result) { //выполнится после doInBackground
-        MainActivity activity = mActivityWeakReference.get();
-        if (activity != null){
-            Log.i(TAG, "onPostExecute: " + result);
-        }
+        Log.i(TAG, "onPostExecute: " + result);
         if (mListener != null) {
             mListener.onResult(result);
         }
@@ -70,7 +55,7 @@ public class AsyncHttpPost extends AsyncTask<String, Void, String> {
         URL obj = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
 
-        connection.setRequestMethod("GET");
+        connection.setRequestMethod("POST");
         connection.setRequestProperty("User-Agent", "Mozilla/5.0" );
         connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         connection.setRequestProperty("Content-Type", "application/json");

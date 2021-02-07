@@ -16,9 +16,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <service
-            android:name=".GetDataService"
+            android:name=".SendDataService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".GetDataService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
