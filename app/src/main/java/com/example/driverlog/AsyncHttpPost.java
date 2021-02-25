@@ -3,11 +3,17 @@ package com.example.driverlog;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 // AsyncTask<тип входного аргумента, тип прогресса. тип возвращаемого значения>
 public class AsyncHttpPost extends AsyncTask<String, Void, String> {
@@ -33,9 +39,9 @@ public class AsyncHttpPost extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {// выполнится в фоновом потоке
-        Log.i(TAG, "doInBackground: request - " + strings[0]);
+        Log.i(TAG, "doInBackground: ");
         try {
-            return doGet(strings[0]);
+            return doGet(strings[0], strings[1]);
         } catch (Exception e) {
             Log.e(TAG, "Ошибка подключения: " +e.toString());
             return "ServerError";
@@ -50,17 +56,28 @@ public class AsyncHttpPost extends AsyncTask<String, Void, String> {
         }
     }
 
-    public static String doGet(String url) throws Exception {
 
-        URL obj = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
 
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0" );
-        connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        connection.setRequestProperty("Content-Type", "application/json");
+    public static String doGet(String myURL, String params) throws Exception {
+        byte[] data = null;
+        InputStream is = null;
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        URL url = new URL(myURL);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+
+        conn.setRequestProperty("Content-Length", "" + params.getBytes().length);
+        OutputStream os = conn.getOutputStream();
+        data = params.getBytes(StandardCharsets.UTF_8);
+        os.write(data);
+        data = null;
+
+        conn.connect();
+        int responseCode = conn.getResponseCode();
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
 

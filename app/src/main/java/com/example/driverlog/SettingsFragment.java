@@ -19,12 +19,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 
 public class SettingsFragment extends Fragment {
+    public static final String TAG = SettingsFragment.class.getSimpleName();
 
     Button button_connect_db;
     Button button_connect_elm327;
@@ -35,9 +39,7 @@ public class SettingsFragment extends Fragment {
     SharedPreferencesHelper mSharedPreferencesHelper;
 
     private String deviceAddress;
-    private String ProtocolString;
-    private String ServerAddressString;
-    private String IdString;
+    private String ParamString;
     private String RequestString;
 
     public static SettingsFragment newInstance() {
@@ -119,11 +121,15 @@ public class SettingsFragment extends Fragment {
                 }
             });
 
-            ProtocolString = "http://";
-            ServerAddressString = et_ip.getText().toString() + "/api/log/connect?";
-            IdString = "ID=" + et_id.getText().toString();
-            RequestString = ProtocolString + ServerAddressString + IdString;
-            asyncHttpPost.execute(RequestString);
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("ID", et_id.getText().toString());
+            } catch (JSONException e) {
+                Log.e(TAG, "Не удалось создать поле данных для запроса аутентификации");
+            }
+            ParamString = jsonObject.toString();
+            RequestString = "http://" + et_ip.getText().toString() + "/api/log/connect/";
+            asyncHttpPost.execute(RequestString, ParamString);
         }
     };
 
@@ -137,15 +143,16 @@ public class SettingsFragment extends Fragment {
     View.OnClickListener CL_Save = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Integer period;
+            Float period;
             if (et_period.getText().toString().isEmpty()){
                 period = mSharedPreferencesHelper.getPeriod();
             }
             else {
-                period = Integer.parseInt(et_period.getText().toString());
+                period = Float.parseFloat(et_period.getText().toString());
                 mSharedPreferencesHelper.addPeriod(period);
             }
             Intent intent = new Intent(getActivity(), GetDataService.class);
+            Toast.makeText(getActivity(), "Период = " + et_period.getText().toString() + " сек", Toast.LENGTH_SHORT).show();
             getActivity().stopService(intent);
         }
     };

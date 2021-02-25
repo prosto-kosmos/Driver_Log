@@ -3,6 +3,7 @@ package com.example.driverlog;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.gson.Gson;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class MainFragment extends Fragment {

@@ -92,15 +92,15 @@ public class GetDataService extends Service {
                 try {
                     if (socket == null) {
                         deviceAddress = mSharedPreferencesHelper.getAddress();
-                        if (deviceAddress.equals("")){
-                            Log.i(TAG, "Проверьте Bluetooth подключение к ELM 327");
-                            mManager.notify(1, getNotification("Проверьте Bluetooth подключение к ELM 327"));
-                            return;
-                        }
                         btAdapter = BluetoothAdapter.getDefaultAdapter();
                         if(!btAdapter.isEnabled()){
                             mManager.notify(1, getNotification("Bluetooth выключен"));
                             Log.i(TAG, "Bluetooth выключен");
+                            return;
+                        }
+                        if (deviceAddress.equals("")){
+                            Log.i(TAG, "Проверьте Bluetooth подключение к ELM 327");
+                            mManager.notify(1, getNotification("Проверьте Bluetooth подключение к ELM 327"));
                             return;
                         }
                         device  = btAdapter.getRemoteDevice(deviceAddress);
@@ -108,7 +108,7 @@ public class GetDataService extends Service {
 
                         try {
                             socket = device.createInsecureRfcommSocketToServiceRecord(uuid);
-                            Log.i(TAG,"Сокет создан");
+                            Log.d(TAG,"Сокет создан");
                         } catch (Exception e) {
                             Log.e(TAG,"Не удалось создать сокет");
                             mManager.notify(1, getNotification("Не удалось создать сокет"));
@@ -140,9 +140,9 @@ public class GetDataService extends Service {
                     new EchoOffCommand().run(socket.getInputStream(), socket.getOutputStream());
                     new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
                     new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
-                    new SelectProtocolCommand(ObdProtocols.ISO_14230_4_KWP_FAST)
+                    new SelectProtocolCommand(ObdProtocols.AUTO)
                             .run(socket.getInputStream(), socket.getOutputStream());
-                    Log.i(TAG, "OBDII адаптер инициализирован");
+                    Log.d(TAG, "OBDII адаптер инициализирован");
                 } catch (Exception e) {
                     Log.e(TAG, "Не удалось инициализировать OBDII адаптер" + e.toString());
                     mManager.notify(1, getNotification("OBDII не найден"));
@@ -186,7 +186,7 @@ public class GetDataService extends Service {
                     return;
                 }
             }
-        }, 1, mSharedPreferencesHelper.getPeriod(), TimeUnit.SECONDS);
+        }, 1000, (long) (mSharedPreferencesHelper.getPeriod() * 1000), TimeUnit.MILLISECONDS);
     }
 
     @Override

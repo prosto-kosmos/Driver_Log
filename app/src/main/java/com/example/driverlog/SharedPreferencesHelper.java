@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class SharedPreferencesHelper {
-    public static final String SHARED_PREF_NAME = "DRIVER_LOG_DATA_12";
+    public static final String SHARED_PREF_NAME = "DRIVER_LOG_DATA_14";
     public static final String ET_ID = "ID";
     public static final String ET_IP = "IP";
     public static final String FIO = "FIO";
@@ -71,12 +71,12 @@ public class SharedPreferencesHelper {
         mSharedPreferences.edit().putString(ADDRESS_KEY, address).apply();
     }
 
-    public Integer getPeriod(){
-        return mSharedPreferences.getInt(PERIOD_KEY, 5);
+    public Float getPeriod(){
+        return mSharedPreferences.getFloat(PERIOD_KEY, 1);
     }
 
-    public void addPeriod(Integer period){
-        mSharedPreferences.edit().putInt(PERIOD_KEY, period).apply();
+    public void addPeriod(Float period){
+        mSharedPreferences.edit().putFloat(PERIOD_KEY, period).apply();
     }
 
 
